@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eclipsera: Herói ou Vilão</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+body { overflow-x: hidden; background: #000; color: #fff; }
+section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; position: relative; overflow: hidden; }
+h1, h2 { text-shadow: 2px 2px 8px #000; }
+h1 { font-size: 3rem; color: #ff2e2e; animation: flicker 1.5s infinite; }
+h2 { font-size: 2rem; color: #ffd700; animation: flicker 2s infinite; }
+p { font-size: 1.2rem; max-width: 800px; line-height: 1.6; text-shadow: 1px 1px 4px #000; }
+.btn { padding: 1rem 2rem; background-color: #ff2e2e; color: #fff; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: 0.3s; z-index: 10; position: relative; }
+.btn:hover { background-color: #ffd700; color: #000; }
+.fade-in { opacity: 0; transform: translateY(30px); animation: fadeIn 1s forwards; }
+@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; } 20%,22%,24%,55% { opacity: 0.3; } }
+canvas { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; }
+.symbol { width: 150px; margin: 1rem; opacity: 0.7; animation: float 3s ease-in-out infinite alternate; }
+@keyframes float { from { transform: translateY(0px); } to { transform: translateY(-15px); } }
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<section id="intro">
+<h1 class="fade-in">Eclipsera</h1>
+<p class="fade-in">Um mundo dividido entre luz e sombra, onde duas crianças serão escolhidas: herói e vilão. O destino do planeta depende de suas escolhas.</p>
+<button class="btn" onclick="scrollToSection('mundos')">Começar</button>
+</section>
+
+<section id="mundos">
+<h2 class="fade-in">Os Mundos</h2>
+<p class="fade-in">Luz Celestial: cidades flutuantes e auroras douradas. Sombra Abissal: rios de lava negra e caos. Cada passo no ciclo de escolha altera o equilíbrio.</p>
+<button class="btn" onclick="scrollToSection('personagens')">Conhecer os Escolhidos</button>
+</section>
+
+<section id="personagens">
+<h2 class="fade-in">Herói e Vilã</h2>
+<p class="fade-in"><strong>Kael – Herói:</strong> corajoso, controla Energia da Luz.<br>
+<strong>Liora – Vilã:</strong> manipuladora, controla Sombra Abissal. Amigos de infância, agora inimigos mortais.</p>
+<button class="btn" onclick="scrollToSection('jornada')">A Jornada</button>
+</section>
+
+<section id="jornada">
+<h2 class="fade-in">A Jornada</h2>
+<p class="fade-in">Do riso compartilhado à batalha inevitável. Kael tenta salvar Liora, mas a Sombra a corrompe. O mundo treme, cidades caem, rios de lava ameaçam.</p>
+<button class="btn" onclick="scrollToSection('climax')">O Clímax</button>
+</section>
+
+<section id="climax">
+<h2 class="fade-in">O Clímax</h2>
+<p class="fade-in">No Pico do Crepúsculo, Kael enfrenta Liora. Luz e sombra colidem, céu vermelho-sangue explode. O herói hesita, lembra da amizade… mas não há escolha: o golpe final é dado.</p>
+<button class="btn" onclick="scrollToSection('final')">O Final</button>
+</section>
+
+<section id="final">
+<h2 class="fade-in">O Mundo Salvo</h2>
+<p class="fade-in">Eclipsera brilha novamente, mas Kael caminha sozinho, carregando a dor eterna de ter perdido a amiga. Algumas escolhas não têm retorno.</p>
+<button class="btn" onclick="scrollToSection('intro')">Recomeçar</button>
+</section>
+
+<script>
+function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let w,h;
+function resize(){w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight;}
+window.addEventListener('resize',resize);
+resize();
+const particles = [];
+for(let i=0;i<200;i++){particles.push({x: Math.random()*w, y: Math.random()*h, size: Math.random()*3+1, speed: Math.random()*2+0.5, angle: Math.random()*2*Math.PI, color: Math.random()<0.5?'#ff2e2e':'#ffd700', alpha: Math.random()});}
+function animate(){ctx.fillStyle='rgba(0,0,0,0.2)'; ctx.fillRect(0,0,w,h); const scrollY = window.scrollY; const climaxSection = document.getElementById('climax').offsetTop; const intensity = Math.min(Math.max((scrollY-climaxSection+window.innerHeight)/window.innerHeight,0),1); particles.forEach(p=>{p.x += Math.cos(p.angle)*(p.speed + intensity*3); p.y += Math.sin(p.angle)*(p.speed + intensity*3); if(p.x<0||p.x>w||p.y<0||p.y>h){p.x=Math.random()*w; p.y=Math.random()*h;} ctx.beginPath(); ctx.arc(p.x,p.y,p.size*(1+intensity),0,2*Math.PI); ctx.fillStyle = `rgba(${p.color==='#ff2e2e'?255:255},${p.color==='#ff2e2e'?46:215},46,${p.alpha+intensity*0.5})`; ctx.fill();}); requestAnimationFrame(animate);}
+animate();
+</script>
+
+</body>
+</html>
